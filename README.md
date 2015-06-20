@@ -1,13 +1,14 @@
 # Wisper::Sequel
 
-A Sequel plugin for broadcasting model hooks as Wisper events.
+A Sequel plugin for broadcasting model hooks as
+[Wisper](https://github.com/krisleech/wisper) events.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'wisper-sequel'
+gem 'wisper-sequel', github: 'munshkr/wisper-sequel'
 ```
 
 And then execute:
