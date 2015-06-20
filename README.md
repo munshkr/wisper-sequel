@@ -23,7 +23,13 @@ Or install it yourself as:
 Please refer to the [Wisper README](https://github.com/krisleech/wisper) for
 full details about subscribing.
 
-The complete list of events which are automatically broadcasted are:
+Some of the events which are automatically broadcast are
+
+* `create_<model_name>_{successful,failed}`
+* `update_<model_name>_{successful,failed}`
+* `destroy_<model_name>_{successful,failed}`
+
+There is also an event per each model hook available.  The complete list is:
 
 * `before_validation`
 * `after_validation`
@@ -39,13 +45,6 @@ The complete list of events which are automatically broadcasted are:
 * `after_rollback`
 * `after_destroy_commit`
 * `after_destroy_rollback`
-
-Some of the events are aliased to more meaningful names, like:
-
-* `create_<model_name>_{successful,failed}` (uses `after_create`)
-* `update_<model_name>_{successful,failed}` (uses `after_update`)
-* `destroy_<model_name>_{successful,failed}` (uses `after_destroy`)
-* `<model_name>_committed` (alias of `after_commit`)
 
 ## Development
 
