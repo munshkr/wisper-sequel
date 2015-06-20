@@ -24,18 +24,38 @@ describe Sequel::Plugins::Wisper do
     Foo.create_table!
   end
 
+  let(:hook_events) { [ :before_validation,
+                        :after_validation,
+                        :before_save,
+                        :after_save,
+                        :before_create,
+                        :after_create,
+                        :before_update,
+                        :after_update,
+                        :before_destroy,
+                        :after_destroy,
+                        :after_commit,
+                        :after_rollback,
+                        :after_destroy_commit,
+                        :after_destroy_rollback ] }
+
+  let(:all_events) { hook_events + [ :create_foo_successful,
+                                     :create_foo_failed,
+                                     :update_foo_successful,
+                                     :update_foo_failed,
+                                     :destroy_foo_successful,
+                                     :destroy_foo_failed ] }
+
   before do
     @m = Foo.new
+    @events = []
+    all_events.each { |ev| @m.on(ev) { |m| @events << ev } }
   end
 
   describe 'on validation' do
     it 'broadcasts on #before_validation and #after_validation hooks' do
-      events = []
-      @m.on(:before_validation) { events << :before_validation }
-      @m.on(:after_validation) { events << :after_validation }
-
       expect(@m.valid?).to be false
-      expect(events).to eq([:before_validation, :after_validation])
+      expect(@events).to eq([:before_validation, :after_validation])
     end
   end
 
@@ -49,6 +69,8 @@ describe Sequel::Plugins::Wisper do
     end
 
     it 'broadcasts all model hook events in the expected order' do
+      @m.save
+
       expected_events = [ :before_validation,
                           :after_validation,
                           :before_save,
@@ -58,11 +80,7 @@ describe Sequel::Plugins::Wisper do
                           :after_save,
                           :after_commit ]
 
-      events = []
-      expected_events.each { |ev| @m.on(ev) { |m| events << ev } }
-
-      @m.save
-      expect(events).to eq(expected_events)
+      expect(@events).to eq(expected_events)
     end
   end
 
@@ -78,15 +96,13 @@ describe Sequel::Plugins::Wisper do
     end
 
     it 'broadcasts all model hook events in the expected order' do
+      @m.save rescue Sequel::ValidationFailed
+
       expected_events = [ :before_validation,
                           :after_validation,
                           :create_foo_failed ]
 
-      events = []
-      expected_events.each { |ev| @m.on(ev) { |m| events << ev } }
-
-      @m.save rescue Sequel::ValidationFailed
-      expect(events).to eq(expected_events)
+      expect(@events).to eq(expected_events)
     end
   end
 
@@ -94,6 +110,7 @@ describe Sequel::Plugins::Wisper do
     before do
       @m.value = :foo
       @m.save
+      @events.clear
       @m.value = :bar
     end
 
@@ -102,6 +119,8 @@ describe Sequel::Plugins::Wisper do
     end
 
     it 'broadcasts all model hook events in the expected order' do
+      @m.save
+
       expected_events = [ :before_validation,
                           :after_validation,
                           :before_save,
@@ -111,11 +130,7 @@ describe Sequel::Plugins::Wisper do
                           :after_save,
                           :after_commit ]
 
-      events = []
-      expected_events.each { |ev| @m.on(ev) { |m| events << ev } }
-
-      @m.save
-      expect(events).to eq(expected_events)
+      expect(@events).to eq(expected_events)
     end
   end
 
@@ -123,6 +138,7 @@ describe Sequel::Plugins::Wisper do
     before do
       @m.value = :foo
       @m.save
+      @events.clear
       @m.value = nil
     end
 
@@ -133,15 +149,13 @@ describe Sequel::Plugins::Wisper do
     end
 
     it 'broadcasts all model hook events in the expected order' do
+      @m.save rescue Sequel::ValidationFailed
+
       expected_events = [ :before_validation,
                           :after_validation,
                           :update_foo_failed ]
 
-      events = []
-      expected_events.each { |ev| @m.on(ev) { |m| events << ev } }
-
-      @m.save rescue Sequel::ValidationFailed
-      expect(events).to eq(expected_events)
+      expect(@events).to eq(expected_events)
     end
   end
 
@@ -149,6 +163,7 @@ describe Sequel::Plugins::Wisper do
     before do
       @m.value = :foo
       @m.save
+      @events.clear
     end
 
     it 'broadcasts :destroy_foo_successful' do
@@ -156,16 +171,14 @@ describe Sequel::Plugins::Wisper do
     end
 
     it 'broadcasts all model hook events in the expected order' do
+      @m.destroy
+
       expected_events = [ :before_destroy,
                           :after_destroy,
                           :destroy_foo_successful,
                           :after_destroy_commit ]
 
-      events = []
-      expected_events.each { |ev| @m.on(ev) { |m| events << ev } }
-
-      @m.destroy
-      expect(events).to eq(expected_events)
+      expect(@events).to eq(expected_events)
     end
   end
 
@@ -177,15 +190,13 @@ describe Sequel::Plugins::Wisper do
     end
 
     it 'broadcasts all model hook events in the expected order' do
+      @m.destroy rescue Sequel::NoExistingObject
+
       expected_events = [ :before_destroy,
                           :destroy_foo_failed,
                           :after_destroy_rollback ]
 
-      events = []
-      expected_events.each { |ev| @m.on(ev) { |m| events << ev } }
-
-      @m.destroy rescue Sequel::NoExistingObject
-      expect(events).to eq(expected_events)
+      expect(@events).to eq(expected_events)
     end
   end
 end
