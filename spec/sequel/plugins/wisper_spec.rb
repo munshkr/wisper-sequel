@@ -76,8 +76,8 @@ describe Sequel::Plugins::Wisper do
                           :before_save,
                           :before_create,
                           :after_create,
-                          :create_foo_successful,
                           :after_save,
+                          :create_foo_successful,
                           :after_commit ]
 
       expect(@events).to eq(expected_events)
@@ -126,8 +126,8 @@ describe Sequel::Plugins::Wisper do
                           :before_save,
                           :before_update,
                           :after_update,
-                          :update_foo_successful,
                           :after_save,
+                          :update_foo_successful,
                           :after_commit ]
 
       expect(@events).to eq(expected_events)
@@ -175,8 +175,8 @@ describe Sequel::Plugins::Wisper do
 
       expected_events = [ :before_destroy,
                           :after_destroy,
-                          :destroy_foo_successful,
-                          :after_destroy_commit ]
+                          :after_destroy_commit,
+                          :destroy_foo_successful ]
 
       expect(@events).to eq(expected_events)
     end
@@ -193,8 +193,8 @@ describe Sequel::Plugins::Wisper do
       @m.destroy rescue Sequel::NoExistingObject
 
       expected_events = [ :before_destroy,
-                          :destroy_foo_failed,
-                          :after_destroy_rollback ]
+                          :after_destroy_rollback,
+                          :destroy_foo_failed ]
 
       expect(@events).to eq(expected_events)
     end

@@ -47,6 +47,8 @@ module Sequel
         def after_create
           super
           broadcast(:after_create, self)
+          db.after_commit { broadcast(:"create_#{model_name}_successful", self) }
+          db.after_rollback { broadcast(:"create_#{model_name}_failed", self) }
         end
 
         def before_update
@@ -57,6 +59,8 @@ module Sequel
         def after_update
           super
           broadcast(:after_update, self)
+          db.after_commit { broadcast(:"update_#{model_name}_successful", self) }
+          db.after_rollback { broadcast(:"update_#{model_name}_failed", self) }
         end
 
         def before_destroy
@@ -82,11 +86,13 @@ module Sequel
         def after_destroy_commit
           super
           broadcast(:after_destroy_commit, self)
+          broadcast(:"destroy_#{model_name}_successful", self)
         end
 
         def after_destroy_rollback
           super
           broadcast(:after_destroy_rollback, self)
+          broadcast(:"destroy_#{model_name}_failed", self)
         end
 
         def around_validation
@@ -99,18 +105,6 @@ module Sequel
             broadcast(:"#{action}_#{model_name}_failed", self)
           end
           raise error if error
-        end
-
-        def around_create
-          broadcast_on_around(:create) { super }
-        end
-
-        def around_update
-          broadcast_on_around(:update) { super }
-        end
-
-        def around_destroy
-          broadcast_on_around(:destroy) { super }
         end
 
         private
@@ -129,16 +123,6 @@ module Sequel
 
         def on_save?
           @on_save && @on_save > 0
-        end
-
-        def broadcast_on_around(action)
-          res = yield
-        rescue => error
-          res = nil
-        ensure
-          status = res ? 'successful' : 'failed'
-          broadcast(:"#{action}_#{model_name}_#{status}", self)
-          raise error if error
         end
       end
 
