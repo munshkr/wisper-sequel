@@ -102,33 +102,15 @@ module Sequel
         end
 
         def around_create
-          res = super
-        rescue => error
-          res = nil
-        ensure
-          status = res ? 'successful' : 'failed'
-          broadcast(:"create_#{model_name}_#{status}", self)
-          raise error if error
+          broadcast_on_around(:create) { super }
         end
 
         def around_update
-          res = super
-        rescue => error
-          res = nil
-        ensure
-          status = res ? 'successful' : 'failed'
-          broadcast(:"update_#{model_name}_#{status}", self)
-          raise error if error
+          broadcast_on_around(:update) { super }
         end
 
         def around_destroy
-          res = super
-        rescue => error
-          res = nil
-        ensure
-          status = res ? 'successful' : 'failed'
-          broadcast(:"destroy_#{model_name}_#{status}", self)
-          raise error if error
+          broadcast_on_around(:destroy) { super }
         end
 
         private
@@ -147,6 +129,16 @@ module Sequel
 
         def on_save?
           @on_save && @on_save > 0
+        end
+
+        def broadcast_on_around(action)
+          res = yield
+        rescue => error
+          res = nil
+        ensure
+          status = res ? 'successful' : 'failed'
+          broadcast(:"#{action}_#{model_name}_#{status}", self)
+          raise error if error
         end
       end
 
