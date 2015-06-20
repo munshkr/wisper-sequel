@@ -2,6 +2,9 @@ module Sequel
   module Plugins
     module Wisper
       def self.apply(model, *attrs)
+        require 'sequel/extensions/inflector'
+        require 'wisper'
+
         model.send(:include, ::Wisper::Publisher)
       end
 
@@ -119,11 +122,6 @@ module Sequel
             broadcast(:"destroy_#{model_name}_failed", self)
           end
           raise error if error
-        end
-
-        def broadcast(*args, &block)
-          logger.info "broadcast(#{args})"
-          super
         end
 
         private
