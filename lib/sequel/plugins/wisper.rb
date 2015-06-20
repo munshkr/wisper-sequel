@@ -94,12 +94,9 @@ module Sequel
         rescue => error
           res = nil
         ensure
-          if !res && on_save?
-            if new?
-              broadcast(:"create_#{model_name}_failed", self)
-            else
-              broadcast(:"update_#{model_name}_failed", self)
-            end
+          if on_save? && !res
+            action = new? ? 'create' : 'update'
+            broadcast(:"#{action}_#{model_name}_failed", self)
           end
           raise error if error
         end
@@ -109,11 +106,8 @@ module Sequel
         rescue => error
           res = nil
         ensure
-          if res
-            broadcast(:"create_#{model_name}_successful", self)
-          else
-            broadcast(:"create_#{model_name}_failed", self)
-          end
+          status = res ? 'successful' : 'failed'
+          broadcast(:"create_#{model_name}_#{status}", self)
           raise error if error
         end
 
@@ -122,11 +116,8 @@ module Sequel
         rescue => error
           res = nil
         ensure
-          if res
-            broadcast(:"update_#{model_name}_successful", self)
-          else
-            broadcast(:"update_#{model_name}_failed", self)
-          end
+          status = res ? 'successful' : 'failed'
+          broadcast(:"update_#{model_name}_#{status}", self)
           raise error if error
         end
 
@@ -135,11 +126,8 @@ module Sequel
         rescue => error
           res = nil
         ensure
-          if res
-            broadcast(:"destroy_#{model_name}_successful", self)
-          else
-            broadcast(:"destroy_#{model_name}_failed", self)
-          end
+          status = res ? 'successful' : 'failed'
+          broadcast(:"destroy_#{model_name}_#{status}", self)
           raise error if error
         end
 
