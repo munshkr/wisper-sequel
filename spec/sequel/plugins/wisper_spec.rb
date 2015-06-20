@@ -199,4 +199,93 @@ describe Sequel::Plugins::Wisper do
       expect(@events).to eq(expected_events)
     end
   end
+
+  describe 'when Foo is created on a transaction, but is then rollbacked' do
+    before do
+      @m.value = :foo
+    end
+
+    it 'broadcasts :create_foo_failed' do
+      expect { DB.transaction { @m.save; raise Sequel::Rollback } }
+        .to broadcast(:create_foo_failed, @m)
+    end
+
+    it 'broadcasts all model hook events in the expected order' do
+      DB.transaction do
+        @m.save
+        raise Sequel::Rollback
+      end
+
+      expected_events = [ :before_validation,
+                          :after_validation,
+                          :before_save,
+                          :before_create,
+                          :after_create,
+                          :after_save,
+                          :after_rollback,
+                          :create_foo_failed ]
+
+      expect(@events).to eq(expected_events)
+    end
+  end
+
+  describe 'when Foo is updated on a transaction, but is then rollbacked' do
+    before do
+      @m.value = :foo
+      @m.save
+      @events.clear
+      @m.value = :bar
+    end
+
+    it 'broadcasts :create_foo_failed' do
+      expect { DB.transaction { @m.save; raise Sequel::Rollback } }
+        .to broadcast(:update_foo_failed, @m)
+    end
+
+    it 'broadcasts all model hook events in the expected order' do
+      DB.transaction do
+        @m.save
+        raise Sequel::Rollback
+      end
+
+      expected_events = [ :before_validation,
+                          :after_validation,
+                          :before_save,
+                          :before_update,
+                          :after_update,
+                          :after_save,
+                          :after_rollback,
+                          :update_foo_failed ]
+
+
+      expect(@events).to eq(expected_events)
+    end
+  end
+
+  describe 'when Foo is destroyed on a transaction, but is then rollbacked' do
+    before do
+      @m.value = :foo
+      @m.save
+      @events.clear
+    end
+
+    it 'broadcasts :create_foo_failed' do
+      expect { DB.transaction { @m.destroy; raise Sequel::Rollback } }
+        .to broadcast(:destroy_foo_failed, @m)
+    end
+
+    it 'broadcasts all model hook events in the expected order' do
+      DB.transaction do
+        @m.destroy
+        raise Sequel::Rollback
+      end
+
+      expected_events = [ :before_destroy,
+                          :after_destroy,
+                          :after_destroy_rollback,
+                          :destroy_foo_failed ]
+
+      expect(@events).to eq(expected_events)
+    end
+  end
 end
