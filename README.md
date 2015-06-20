@@ -1,11 +1,6 @@
 # Wisper::Sequel
 
-Welcome to your new gem! In this directory, you'll find the files you need to
-be able to package up your Ruby library into a gem. Put your Ruby code in the
-file `lib/wisper/sequel`. To experiment with that code, run `bin/console` for
-an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+A Sequel plugin for broadcasting model hooks as Wisper events.
 
 ## Installation
 
@@ -25,7 +20,32 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Please refer to the [Wisper README](https://github.com/krisleech/wisper) for
+full details about subscribing.
+
+The complete list of events which are automatically broadcasted are:
+
+* `before_validation`
+* `after_validation`
+* `before_save`
+* `after_save`
+* `before_create`
+* `after_create`
+* `before_update`
+* `after_update`
+* `before_destroy`
+* `after_destroy`
+* `after_commit`
+* `after_rollback`
+* `after_destroy_commit`
+* `after_destroy_rollback`
+
+Some of the events are aliased to more meaningful names, like:
+
+* `create_<model_name>_{successful,failed}` (uses `after_create`)
+* `update_<model_name>_{successful,failed}` (uses `after_update`)
+* `destroy_<model_name>_{successful,failed}` (uses `after_destroy`)
+* `<model_name>_committed` (alias of `after_commit`)
 
 ## Development
 
