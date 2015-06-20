@@ -1,8 +1,8 @@
 # Wisper::Sequel
 
 [![Build Status](https://travis-ci.org/munshkr/wisper-sequel.svg)](https://travis-ci.org/munshkr/wisper-sequel)
-[![Code Climate](https://codeclimate.com/repos/55858b966956805c63027092/badges/91b72eab516b688052af/gpa.svg)](https://codeclimate.com/repos/55858b966956805c63027092/feed)
-[![Test Coverage](https://codeclimate.com/repos/55858b966956805c63027092/badges/91b72eab516b688052af/coverage.svg)](https://codeclimate.com/repos/55858b966956805c63027092/coverage)
+[![Code Climate](https://codeclimate.com/github/munshkr/wisper-sequel/badges/gpa.svg)](https://codeclimate.com/github/munshkr/wisper-sequel)
+[![Test Coverage](https://codeclimate.com/github/munshkr/wisper-sequel/badges/coverage.svg)](https://codeclimate.com/github/munshkr/wisper-sequel/coverage)
 
 A Sequel plugin for broadcasting model hooks as
 [Wisper](https://github.com/krisleech/wisper) events.
