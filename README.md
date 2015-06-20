@@ -1,5 +1,7 @@
 # Wisper::Sequel
 
+[![Build Status](https://travis-ci.org/munshkr/wisper-sequel.svg)](https://travis-ci.org/munshkr/wisper-sequel)
+
 A Sequel plugin for broadcasting model hooks as
 [Wisper](https://github.com/krisleech/wisper) events.
 
