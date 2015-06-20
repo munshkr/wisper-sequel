@@ -15,6 +15,10 @@ module Sequel
       end
 
       module InstanceMethods
+        def save
+          on_save { super }
+        end
+
         def before_validation
           broadcast(:before_validation, self)
           super
@@ -90,7 +94,7 @@ module Sequel
         rescue => error
           res = nil
         ensure
-          unless res
+          if !res && on_save?
             if new?
               broadcast(:"create_#{model_name}_failed", self)
             else
@@ -143,6 +147,18 @@ module Sequel
 
         def model_name
           model.name.underscore
+        end
+
+        def on_save
+          @on_save ||= 0
+          @on_save += 1
+          yield
+        ensure
+          @on_save -= 1
+        end
+
+        def on_save?
+          @on_save && @on_save > 0
         end
       end
 

@@ -170,7 +170,7 @@ describe Sequel::Plugins::Wisper do
   end
 
   describe 'when Foo fails to destroy' do
-    it 'broadcasts :update_foo_failed' do
+    it 'broadcasts :destroy_foo_failed' do
       expect {
         @m.destroy rescue Sequel::NoExistingObject
       }.to broadcast(:destroy_foo_failed, @m)
