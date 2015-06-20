@@ -85,6 +85,21 @@ module Sequel
           broadcast(:after_destroy_rollback, self)
         end
 
+        def around_validation
+          res = super
+        rescue => error
+          res = nil
+        ensure
+          unless res
+            if new?
+              broadcast(:"create_#{model_name}_failed", self)
+            else
+              broadcast(:"update_#{model_name}_failed", self)
+            end
+          end
+          raise error if error
+        end
+
         def around_create
           res = super
         rescue => error
