@@ -46,6 +46,10 @@ There is also an event per each model hook available.  The complete list is:
 * `after_destroy_commit`
 * `after_destroy_rollback`
 
+Please refer to [Sequel Model
+Hooks](http://sequel.jeremyevans.net/rdoc/files/doc/model_hooks_rdoc.html)
+document for full details about model hooks.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run
@@ -61,7 +65,7 @@ git commits and tags, and push the `.gem` file to
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at
-https://github.com/[USERNAME]/wisper-sequel. This project is intended to be a
+https://github.com/munshkr/wisper-sequel. This project is intended to be a
 safe, welcoming space for collaboration, and contributors are expected to
 adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
 
