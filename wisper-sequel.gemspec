@@ -9,9 +9,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Damián Silvani"]
   spec.email         = ["munshkr@gmail.com"]
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{A Sequel plugin for broadcasting model hooks as Wisper events.}
+  spec.description   = %q{Transparently publish model lifecycle events to subscribers.}
+  spec.homepage      = "https://github.com/munshkr/wisper-sequel"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
