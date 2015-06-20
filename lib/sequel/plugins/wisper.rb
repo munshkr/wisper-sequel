@@ -15,7 +15,7 @@ module Sequel
       end
 
       module InstanceMethods
-        def save
+        def save(*args)
           on_save { super }
         end
 
