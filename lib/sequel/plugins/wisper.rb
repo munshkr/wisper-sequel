@@ -8,12 +8,6 @@ module Sequel
         model.send(:include, ::Wisper::Publisher)
       end
 
-      def self.configure(model, *attrs)
-      end
-
-      module ClassMethods
-      end
-
       module InstanceMethods
         def save(*args)
           on_save { super }
@@ -124,9 +118,6 @@ module Sequel
         def on_save?
           @on_save && @on_save > 0
         end
-      end
-
-      module DatasetMethods
       end
     end
   end
