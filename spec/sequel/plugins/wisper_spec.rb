@@ -288,4 +288,39 @@ describe Sequel::Plugins::Wisper do
       expect(@events).to eq(expected_events)
     end
   end
+
+  describe 'if Foo is saved again on an *after* hook' do
+    before do
+      @m.define_singleton_method(:after_create) do
+        super()
+        self.value = :bar
+        self.save
+      end
+
+      @m.value = :foo
+    end
+
+    it 'broadcast :create_foo_successful only once' do
+      @m.save
+
+      expected_events = [ :before_validation,
+                          :after_validation,
+                          :before_save,
+                          :before_create,
+                          :after_create,
+                          :before_validation,
+                          :after_validation,
+                          :before_save,
+                          :before_update,
+                          :after_update,
+                          :after_save,
+                          :after_save,
+                          :create_foo_successful,
+                          :update_foo_successful,
+                          :after_commit,
+                          :after_commit ]
+
+      expect(@events).to eq(expected_events)
+    end
+  end
 end

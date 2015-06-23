@@ -108,15 +108,14 @@ module Sequel
         end
 
         def on_save
-          @on_save ||= 0
-          @on_save += 1
+          @on_save = true
           yield
         ensure
-          @on_save -= 1
+          @on_save = nil
         end
 
         def on_save?
-          @on_save && @on_save > 0
+          @on_save
         end
       end
     end
