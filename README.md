@@ -12,7 +12,7 @@ A Sequel plugin for broadcasting model hooks as
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'wisper-sequel', github: 'munshkr/wisper-sequel'
+gem 'wisper-sequel'
 ```
 
 And then execute:
@@ -24,6 +24,22 @@ Or install it yourself as:
     $ gem install wisper-sequel
 
 ## Usage
+
+This gem defines a Sequel Plugin, so if you want to make your model class
+publish hook events, use `plugin :wisper`.  This will maker your model a
+`Wisper::Publisher` and automatically broadcast all model hook events.
+
+```ruby
+class User < Sequel::Model
+  plugin :wisper
+end
+```
+
+You can also make all models broadcast:
+
+```ruby
+Sequel::Model.plugin :wisper
+```
 
 Please refer to the [Wisper README](https://github.com/krisleech/wisper) for
 full details about subscribing.
