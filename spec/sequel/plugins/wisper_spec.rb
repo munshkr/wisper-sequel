@@ -323,4 +323,19 @@ describe Sequel::Plugins::Wisper do
       expect(@events).to eq(expected_events)
     end
   end
+
+  describe 'when :event_param_block is set' do
+    before do
+      Foo.plugin :wisper, event_param_block: lambda{ |m| m.value }
+      @m.value = 'foo'
+    end
+
+    after do
+      Foo.plugin :wisper
+    end
+
+    it 'broadcast events with the result of that block' do
+      expect { @m.save }.to broadcast(:create_foo_successful, 'foo')
+    end
+  end
 end
